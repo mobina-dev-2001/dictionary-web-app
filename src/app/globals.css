@@ -115,7 +115,7 @@
   /*---------- Border ----------*/
   --ring: oklch(0.708 0 0);
   --input: oklch(0.922 0 0);
-  --border: oklch(0.922 0 0);
+  --border: var(--c-neutral-200);
   /*---------- Border ----------*/
 
   /*---------- Card ----------*/
@@ -124,8 +124,8 @@
   /*---------- Card ----------*/
 
   /*---------- Popover ----------*/
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
+  --popover: var(--c-neutral-0);
+  --popover-foreground: var(--c-neutral-800);
   /*---------- Popover ----------*/
 }
 
@@ -140,7 +140,7 @@
   --secondary-foreground: oklch(0.985 0 0);
 
   --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
+  --muted-foreground: var(--c-neutral-500);
 
   --accent: oklch(0.269 0 0);
   --accent-foreground: oklch(0.985 0 0);
@@ -150,7 +150,7 @@
   /*---------- Border ----------*/
   --ring: oklch(0.556 0 0);
   --input: oklch(1 0 0 / 15%);
-  --border: oklch(1 0 0 / 10%);
+  --border: var(--c-neutral-200);
   /*---------- Border ----------*/
 
   /*---------- Card ----------*/
@@ -159,15 +159,12 @@
   /*---------- Card ----------*/
 
   /*---------- Popover ----------*/
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
+  --popover: var(--c-neutral-900);
+  --popover-foreground: var(--c-neutral-0);
   /*---------- Popover ----------*/
 }
 
 @layer base {
-  body {
-    @apply bg-background text-foreground;
-  }
 
   button:not(:disabled),
   [role="button"]:not(:disabled) {
