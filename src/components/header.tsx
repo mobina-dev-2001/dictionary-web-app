@@ -26,7 +26,7 @@ export const Header = () => {
   const selectItemCls = 'text-[clamp(0.875rem,3vw,1.125rem)] leading-6 font-bold [&_svg]:hidden';
 
   return (
-    <header className="flex w-full max-w-184 items-center justify-between gap-4">
+    <header className="flex w-full items-center justify-between gap-4">
       <Image
         src="images/logo.svg"
         alt="Dictionary Web App"
