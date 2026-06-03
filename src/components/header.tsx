@@ -23,13 +23,13 @@ import {
 export const Header = () => {
   const { font, setFont } = useFont();
 
-  const selectItemCls = 'text-[clamp(0.875rem,3vw,1.125rem)] leading-6 font-bold [&_svg]:hidden';
+  const itemClass = 'text-[clamp(0.875rem,3vw,1.125rem)] leading-6 font-bold';
 
   return (
     <header className="flex w-full items-center justify-between gap-4">
       <Image
         src="images/logo.svg"
-        alt="Dictionary Web App"
+        alt="Dictionary Web App Logo"
         width={34}
         height={38}
         className="h-auto w-[clamp(1.75rem,5vw,2rem)]"
@@ -37,7 +37,7 @@ export const Header = () => {
 
       <div className="flex items-center gap-[clamp(1rem,3.5vw,1.5rem)]">
         <Select value={font} onValueChange={(value) => setFont(value as FontPreference)}>
-          <SelectTrigger className="focus:ring-primary focus:ring-offset-background text-[clamp(0.875rem,3vw,1.125rem)] leading-6 font-bold focus:ring-2 focus:ring-offset-4">
+          <SelectTrigger className={cn('rounded-sm', itemClass)}>
             <SelectValue />
           </SelectTrigger>
 
@@ -45,18 +45,18 @@ export const Header = () => {
             position="popper"
             align="end"
             sideOffset={12}
-            className="w-[clamp(7.625rem,24vw,11.438rem)] rounded-3xl shadow-[0_5px_30px_rgba(0,0,0,0.1)] dark:shadow-[0_5px_30px_#A445ED]"
+            className="shadow-popover w-[clamp(7.625rem,24vw,11.438rem)] rounded-3xl"
           >
             <SelectGroup className="grid gap-4 px-[clamp(1rem,3.5vw,1.5rem)] py-6">
-              <SelectItem value="font-sans" className={cn('font-sans', selectItemCls)}>
+              <SelectItem value="font-sans" className={cn('font-sans [&_svg]:hidden', itemClass)}>
                 Sans Serif
               </SelectItem>
 
-              <SelectItem value="font-serif" className={cn('font-serif', selectItemCls)}>
+              <SelectItem value="font-serif" className={cn('font-serif [&_svg]:hidden', itemClass)}>
                 Serif
               </SelectItem>
 
-              <SelectItem value="font-mono" className={cn('font-mono', selectItemCls)}>
+              <SelectItem value="font-mono" className={cn('font-mono [&_svg]:hidden', itemClass)}>
                 Mono
               </SelectItem>
             </SelectGroup>

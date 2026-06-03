@@ -36,7 +36,13 @@ function ThemeTogglerButton({
   className,
   ...props
 }: ThemeTogglerButtonProps) {
+  const [mounted, setMounted] = React.useState(false);
   const { theme, resolvedTheme, setTheme } = useTheme();
+
+  React.useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true);
+  }, []);
 
   return (
     <ThemeTogglerPrimitive
@@ -47,7 +53,7 @@ function ThemeTogglerButton({
       onImmediateChange={onImmediateChange}
     >
       {({ effective, toggleTheme }) => {
-        const isDark = effective === 'dark';
+        const isDark = mounted ? effective === 'dark' : false;
 
         return (
           <div className={cn('flex items-center gap-[clamp(0.625rem,2.5vw,1.25rem)]', className)}>

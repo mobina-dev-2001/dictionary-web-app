@@ -72,6 +72,8 @@
   --radius-3xl: calc(var(--radius) + 6px);
   --radius-4xl: calc(var(--radius) + 8px);
   /*---------- Raduis ----------*/
+
+  --shadow-popover: var(--shadow-popover-value);
 }
 
 :root {
@@ -127,6 +129,8 @@
   --popover: var(--c-neutral-0);
   --popover-foreground: var(--c-neutral-800);
   /*---------- Popover ----------*/
+
+  --shadow-popover-value: 0 5px 30px rgba(0, 0, 0, 0.1);
 }
 
 .dark {
@@ -150,7 +154,7 @@
   /*---------- Border ----------*/
   --ring: oklch(0.556 0 0);
   --input: var(--c-neutral-900);
-  --border: var(--c-neutral-200);
+  --border: var(--c-neutral-700);
   /*---------- Border ----------*/
 
   /*---------- Card ----------*/
@@ -162,6 +166,8 @@
   --popover: var(--c-neutral-900);
   --popover-foreground: var(--c-neutral-0);
   /*---------- Popover ----------*/
+
+  --shadow-popover-value: 0 5px 30px #A445ED;
 }
 
 @layer base {
@@ -170,4 +176,13 @@
   [role="button"]:not(:disabled) {
     cursor: pointer;
   }
+}
+
+*:focus:not(:focus-visible) {
+  outline: none;
+}
+
+*:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 4px;
 }

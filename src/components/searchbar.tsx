@@ -1,8 +1,11 @@
 'use client';
 
+import { useState } from 'react';
 import { TailChase } from 'ldrs/react';
 import { useForm } from 'react-hook-form';
-import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+
+import { useDebounce } from '@/hooks/use-debounce';
 
 import { SearchIcon } from '@/lib/icons';
 
@@ -18,22 +21,10 @@ import 'ldrs/react/TailChase.css';
 
 // ----------------------------------------------------------------------
 
-const useDebounce = (value: string, delay = 400) => {
-  const [debounced, setDebounced] = useState(value);
+export const Searchbar = () => {
+  const [isOpen, setIsOpen] = useState(false);
 
-  useEffect(() => {
-    const timer = setTimeout(() => setDebounced(value), delay);
-    return () => clearTimeout(timer);
-  }, [value, delay]);
-
-  return debounced;
-};
-
-// ----------------------------------------------------------------------
-
-type SearchbarProps = { onWordSelect: (word: string) => void };
-
-export const Searchbar = ({ onWordSelect }: SearchbarProps) => {
+  const router = useRouter();
   const {
     register,
     watch,
@@ -49,11 +40,12 @@ export const Searchbar = ({ onWordSelect }: SearchbarProps) => {
   const { data, isLoading } = useWordSearch(debouncedQuery);
 
   const hasResults = !isLoading && !!data && data.length > 0;
-  const isOpen = debouncedQuery.trim().length > 0;
+  const hasError = !!errors.search;
 
   const selectWord = (word: string) => {
-    setValue('search', word);
-    onWordSelect(word);
+    setValue('search', '');
+    setIsOpen(false);
+    router.push(`/${encodeURIComponent(word)}`);
   };
 
   const onSubmit = (values: { search: string }) => {
@@ -67,16 +59,28 @@ export const Searchbar = ({ onWordSelect }: SearchbarProps) => {
     }
   };
 
-  const hasError = !!errors.search;
-
   return (
     <div className="w-full space-y-2">
       <form onSubmit={handleSubmit(onSubmit)} className="w-full">
-        <Popover open={isOpen}>
+        <Popover
+          open={isOpen}
+          onOpenChange={(open) => {
+            if (open && debouncedQuery.trim().length === 0) return;
+            setIsOpen(open);
+          }}
+        >
           <PopoverTrigger asChild>
             <InputGroup className="px-6 py-[clamp(0.5rem,2vw,1rem)]">
               <InputGroupInput
-                {...register('search', { required: 'Whoops, can’t be empty…' })}
+                {...register('search', {
+                  required: 'Whoops, can’t be empty…',
+                  onChange: (e) => setIsOpen(e.target.value.trim().length > 0),
+                })}
+                onFocus={(e) => {
+                  if (e.target.value.trim().length > 0) {
+                    setIsOpen(true);
+                  }
+                }}
                 role="combobox"
                 aria-label="Search for a word"
                 aria-expanded={isOpen}
@@ -85,7 +89,7 @@ export const Searchbar = ({ onWordSelect }: SearchbarProps) => {
                 aria-autocomplete="list"
                 autoComplete="off"
                 placeholder="Search for any word…"
-                className="text-[clamp(1rem,3vw,1.25rem)] leading-6 font-bold"
+                className="caret-primary text-[clamp(1rem,3vw,1.25rem)] leading-6 font-bold focus-visible:outline-none!"
               />
 
               <InputGroupAddon align="inline-end" className="p-0">
@@ -93,7 +97,7 @@ export const Searchbar = ({ onWordSelect }: SearchbarProps) => {
                   variant="ghost"
                   size="icon"
                   type="submit"
-                  className="focus-visible:ring-primary border-none px-1 focus-visible:ring-2"
+                  className="w-auto border-none px-1.25"
                 >
                   <SearchIcon className="text-primary size-4" />
                 </Button>
@@ -131,7 +135,7 @@ export const Searchbar = ({ onWordSelect }: SearchbarProps) => {
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' || e.key === ' ') selectWord(word.word);
                     }}
-                    className="hover:text-primary focus-visible:text-primary cursor-pointer border-none px-0 ring-0!"
+                    className="hover:text-primary focus-visible:text-primary cursor-pointer border-none px-0 focus-visible:outline-0!"
                   >
                     <ItemContent className="text-[clamp(1rem,3vw,1.25rem)]">
                       {word.word}

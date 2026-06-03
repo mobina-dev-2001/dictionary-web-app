@@ -6,7 +6,9 @@ import { cookies } from 'next/headers';
 import { cn } from '@/lib/utils';
 import { lora, inter, inconsolata } from '@/lib/fonts';
 
+import { Header } from '@/components/header';
 import { Providers } from '@/components/providers';
+import { Searchbar } from '@/components/searchbar';
 
 import './globals.css';
 
@@ -37,12 +39,21 @@ export default async function RootLayout({
         'bg-background text-foreground h-full antialiased',
         activeFontCls,
         lora.variable,
-        inconsolata.variable,
-        inter.variable
+        inter.variable,
+        inconsolata.variable
       )}
     >
       <body className="bg-background text-foreground h-full">
-        <Providers defaultFont={activeFontCls}>{children}</Providers>
+        <Providers defaultFont={activeFontCls}>
+          <div className="grid w-full max-w-204 gap-[clamp(1.5rem,6vw,3.5rem)] justify-self-center px-[clamp(1.5rem,6vw,2.5rem)] py-[clamp(1.5rem,6vw,3.625rem)]">
+            <Header />
+
+            <main className="grid gap-[clamp(1.563rem,6.25vw,3rem)]">
+              <Searchbar />
+              {children}
+            </main>
+          </div>
+        </Providers>
       </body>
     </html>
   );

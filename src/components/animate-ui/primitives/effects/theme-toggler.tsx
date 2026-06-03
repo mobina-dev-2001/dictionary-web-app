@@ -69,9 +69,15 @@ function ThemeToggler({
 
   React.useEffect(() => {
     if (preview && theme === preview.effective && resolvedTheme === preview.resolved) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setPreview(null);
     }
   }, [theme, resolvedTheme, preview]);
+
+  React.useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setCurrent({ effective: theme, resolved: resolvedTheme });
+  }, [theme, resolvedTheme]);
 
   const [fromClip, toClip] = getClipKeyframes(direction);
 
