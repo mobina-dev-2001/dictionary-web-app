@@ -1,3 +1,5 @@
 export default function Home() {
-  return null;
+  return (
+    <h1 className="sr-only">English Dictionary - Search word definitions and pronunciations</h1>
+  );
 }

@@ -29,7 +29,7 @@ export const Header = () => {
     <header className="flex w-full items-center justify-between gap-4">
       <Image
         src="images/logo.svg"
-        alt="Dictionary Web App Logo"
+        alt="Dictionary Web App logo"
         width={34}
         height={38}
         className="h-auto w-[clamp(1.75rem,5vw,2rem)]"
@@ -37,7 +37,10 @@ export const Header = () => {
 
       <div className="flex items-center gap-[clamp(1rem,3.5vw,1.5rem)]">
         <Select value={font} onValueChange={(value) => setFont(value as FontPreference)}>
-          <SelectTrigger className={cn('rounded-sm', itemClass)}>
+          <SelectTrigger
+            aria-label="Select font family"
+            className={cn('focus-styles rounded-xs', itemClass)}
+          >
             <SelectValue />
           </SelectTrigger>
 

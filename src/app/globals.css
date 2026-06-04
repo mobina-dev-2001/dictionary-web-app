@@ -167,7 +167,7 @@
   --popover-foreground: var(--c-neutral-0);
   /*---------- Popover ----------*/
 
-  --shadow-popover-value: 0 5px 30px #A445ED;
+  --shadow-popover-value: 0 5px 30px var(--c-purple-500);
 }
 
 @layer base {
@@ -176,13 +176,16 @@
   [role="button"]:not(:disabled) {
     cursor: pointer;
   }
+
+  .focus-styles {
+    @apply transition-all duration-250 ease-in-out
+  }
+
+  .focus-styles:focus-visible {
+    @apply ring-0 outline-2 outline-primary outline-offset-4
+  }
 }
 
 *:focus:not(:focus-visible) {
   outline: none;
-}
-
-*:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 4px;
 }

@@ -60,14 +60,15 @@ function ThemeTogglerButton({
             <button
               type="button"
               role="switch"
+              aria-label="Toggle dark theme"
               aria-checked={isDark}
               data-slot="theme-toggler-button"
-              className="bg-muted-foreground hover:bg-primary focus-visible:ring-primary focus-visible:ring-offset-background data-[state=checked]:bg-primary relative inline-flex h-5 w-10 shrink-0 cursor-pointer items-center rounded-lg transition-colors outline-none focus-visible:ring-2 focus-visible:ring-offset-4"
               data-state={isDark ? 'checked' : 'unchecked'}
               onClick={(e) => {
                 onClick?.(e);
                 toggleTheme(getNextTheme(effective, modes));
               }}
+              className="bg-muted-foreground hover:bg-primary data-[state=checked]:bg-primary focus-styles relative inline-flex h-5 w-10 shrink-0 items-center rounded-lg"
               {...props}
             >
               <span
@@ -76,7 +77,10 @@ function ThemeTogglerButton({
               />
             </button>
 
-            <MoonIcon className="text-muted-foreground dark:text-primary size-5 transition-colors" />
+            <MoonIcon
+              aria-hidden="true"
+              className="text-muted-foreground dark:text-primary size-5 transition-colors"
+            />
           </div>
         );
       }}

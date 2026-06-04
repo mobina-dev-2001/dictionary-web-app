@@ -59,6 +59,37 @@ export const Searchbar = () => {
     }
   };
 
+  const handleItemKeyDown = (
+    e: React.KeyboardEvent<HTMLDivElement>,
+    word: string,
+    index: number
+  ) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      selectWord(word);
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      const nextOption = document.getElementById(`option-${index + 1}`) as HTMLElement | null;
+      if (nextOption) {
+        nextOption.focus();
+      }
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      const prevOption = document.getElementById(`option-${index - 1}`) as HTMLElement | null;
+      if (prevOption) {
+        prevOption.focus();
+      } else {
+        const inputEl = document.querySelector('input[role="combobox"]') as HTMLElement | null;
+        inputEl?.focus();
+      }
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      setIsOpen(false);
+      const inputEl = document.querySelector('input[role="combobox"]') as HTMLElement | null;
+      inputEl?.focus();
+    }
+  };
+
   return (
     <div className="w-full space-y-2">
       <form onSubmit={handleSubmit(onSubmit)} className="w-full">
@@ -81,15 +112,25 @@ export const Searchbar = () => {
                     setIsOpen(true);
                   }
                 }}
+                onKeyDown={(e) => {
+                  if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    const firstOption = document.querySelector(
+                      '#search-results-list [role="option"]'
+                    ) as HTMLElement | null;
+                    firstOption?.focus();
+                  }
+                }}
                 role="combobox"
                 aria-label="Search for a word"
                 aria-expanded={isOpen}
                 aria-invalid={hasError || undefined}
+                aria-describedby={hasError ? 'search-error' : undefined}
                 aria-controls="search-results-list"
                 aria-autocomplete="list"
                 autoComplete="off"
                 placeholder="Search for any word…"
-                className="caret-primary text-[clamp(1rem,3vw,1.25rem)] leading-6 font-bold focus-visible:outline-none!"
+                className="caret-primary text-[clamp(1rem,3vw,1.25rem)] leading-6 font-bold"
               />
 
               <InputGroupAddon align="inline-end" className="p-0">
@@ -97,9 +138,10 @@ export const Searchbar = () => {
                   variant="ghost"
                   size="icon"
                   type="submit"
-                  className="w-auto border-none px-1.25"
+                  aria-label="Search"
+                  className="focus-styles w-auto rounded-xs border-none px-1.25"
                 >
-                  <SearchIcon className="text-primary size-4" />
+                  <SearchIcon aria-hidden="true" className="text-primary size-4" />
                 </Button>
               </InputGroupAddon>
             </InputGroup>
@@ -126,16 +168,15 @@ export const Searchbar = () => {
 
             {hasResults && (
               <ScrollArea className="h-50">
-                {data?.map((word) => (
+                {data?.map((word, index) => (
                   <Item
                     key={`${word.word}-${word.score}`}
+                    id={`option-${index}`}
                     role="option"
                     tabIndex={0}
                     onClick={() => selectWord(word.word)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') selectWord(word.word);
-                    }}
-                    className="hover:text-primary focus-visible:text-primary cursor-pointer border-none px-0 focus-visible:outline-0!"
+                    onKeyDown={(e) => handleItemKeyDown(e, word.word, index)}
+                    className="hover:text-primary focus-visible:text-primary cursor-pointer border-none px-0"
                   >
                     <ItemContent className="text-[clamp(1rem,3vw,1.25rem)]">
                       {word.word}
@@ -153,7 +194,11 @@ export const Searchbar = () => {
       </form>
 
       {hasError && (
-        <p role="alert" className="text-destructive text-[clamp(1rem,3vw,1.25rem)]">
+        <p
+          role="alert"
+          id="search-error"
+          className="text-destructive text-[clamp(1rem,3vw,1.25rem)]"
+        >
           {errors.search?.message}
         </p>
       )}

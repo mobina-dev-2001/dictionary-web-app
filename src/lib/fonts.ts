@@ -10,6 +10,7 @@ export const inconsolata = localFont({
     },
   ],
   variable: '--font-inconsolata',
+  preload: false,
 });
 
 // ----------------------------------------------------------------------
@@ -38,4 +39,5 @@ export const lora = localFont({
     },
   ],
   variable: '--font-lora',
+  preload: false,
 });

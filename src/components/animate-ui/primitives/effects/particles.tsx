@@ -14,10 +14,7 @@ import { Slot, type WithAsChild } from '@/components/animate-ui/primitives/anima
 type Side = 'top' | 'bottom' | 'left' | 'right';
 type Align = 'start' | 'center' | 'end';
 
-type ParticlesContextType = {
-  animate: boolean;
-  isInView: boolean;
-};
+type ParticlesContextType = { animate: boolean; isInView: boolean };
 
 const [ParticlesProvider, useParticles] =
   getStrictContext<ParticlesContextType>('ParticlesContext');

@@ -7,10 +7,7 @@ import { Slot, type WithAsChild } from '@/components/animate-ui/primitives/anima
 // ----------------------------------------------------------------------
 
 type ButtonProps = WithAsChild<
-  HTMLMotionProps<'button'> & {
-    hoverScale?: number;
-    tapScale?: number;
-  }
+  HTMLMotionProps<'button'> & { hoverScale?: number; tapScale?: number }
 >;
 
 function Button({ hoverScale = 1.05, tapScale = 0.95, asChild = false, ...props }: ButtonProps) {
