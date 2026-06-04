@@ -56,6 +56,7 @@ const itemVariants = cva(
 );
 
 function Item({
+  ref,
   className,
   variant = 'default',
   size = 'default',
@@ -65,6 +66,7 @@ function Item({
   const Comp = asChild ? Slot.Root : 'div';
   return (
     <Comp
+      ref={ref}
       data-slot="item"
       data-variant={variant}
       data-size={size}

@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
 import { TailChase } from 'ldrs/react';
+import { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 
@@ -23,6 +23,8 @@ import 'ldrs/react/TailChase.css';
 
 export const Searchbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const optionsRef = useRef<(HTMLDivElement | null)[]>([]);
 
   const router = useRouter();
   const {
@@ -32,6 +34,11 @@ export const Searchbar = () => {
     setValue,
     formState: { errors },
   } = useForm<{ search: string }>({ defaultValues: { search: '' } });
+
+  const { ref: registerRef, ...registerRest } = register('search', {
+    required: 'Whoops, can’t be empty…',
+    onChange: (e) => setIsOpen(e.target.value.trim().length > 0),
+  });
 
   // eslint-disable-next-line react-hooks/incompatible-library
   const query = watch('search');
@@ -69,24 +76,20 @@ export const Searchbar = () => {
       selectWord(word);
     } else if (e.key === 'ArrowDown') {
       e.preventDefault();
-      const nextOption = document.getElementById(`option-${index + 1}`) as HTMLElement | null;
-      if (nextOption) {
-        nextOption.focus();
+      if (index + 1 < (data?.length ?? 0)) {
+        optionsRef.current[index + 1]?.focus();
       }
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
-      const prevOption = document.getElementById(`option-${index - 1}`) as HTMLElement | null;
-      if (prevOption) {
-        prevOption.focus();
+      if (index - 1 >= 0) {
+        optionsRef.current[index - 1]?.focus();
       } else {
-        const inputEl = document.querySelector('input[role="combobox"]') as HTMLElement | null;
-        inputEl?.focus();
+        inputRef.current?.focus();
       }
     } else if (e.key === 'Escape') {
       e.preventDefault();
       setIsOpen(false);
-      const inputEl = document.querySelector('input[role="combobox"]') as HTMLElement | null;
-      inputEl?.focus();
+      inputRef.current?.focus();
     }
   };
 
@@ -103,10 +106,11 @@ export const Searchbar = () => {
           <PopoverTrigger asChild>
             <InputGroup className="px-6 py-[clamp(0.5rem,2vw,1rem)]">
               <InputGroupInput
-                {...register('search', {
-                  required: 'Whoops, can’t be empty…',
-                  onChange: (e) => setIsOpen(e.target.value.trim().length > 0),
-                })}
+                {...registerRest}
+                ref={(el) => {
+                  registerRef(el);
+                  inputRef.current = el;
+                }}
                 onFocus={(e) => {
                   if (e.target.value.trim().length > 0) {
                     setIsOpen(true);
@@ -115,10 +119,7 @@ export const Searchbar = () => {
                 onKeyDown={(e) => {
                   if (e.key === 'ArrowDown') {
                     e.preventDefault();
-                    const firstOption = document.querySelector(
-                      '#search-results-list [role="option"]'
-                    ) as HTMLElement | null;
-                    firstOption?.focus();
+                    optionsRef.current[0]?.focus();
                   }
                 }}
                 role="combobox"
@@ -171,6 +172,9 @@ export const Searchbar = () => {
                 {data?.map((word, index) => (
                   <Item
                     key={`${word.word}-${word.score}`}
+                    ref={(el) => {
+                      optionsRef.current[index] = el;
+                    }}
                     id={`option-${index}`}
                     role="option"
                     tabIndex={0}

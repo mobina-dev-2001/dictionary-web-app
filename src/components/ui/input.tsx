@@ -4,9 +4,10 @@ import { cn } from '@/lib/utils';
 
 // ----------------------------------------------------------------------
 
-function Input({ className, type, ...props }: React.ComponentProps<'input'>) {
+function Input({ ref, className, type, ...props }: React.ComponentProps<'input'>) {
   return (
     <input
+      ref={ref}
       type={type}
       data-slot="input"
       className={cn(
