@@ -1,5 +1,7 @@
 import Link from 'next/link';
 
+import { Separator } from '@/components/ui/separator';
+
 // ----------------------------------------------------------------------
 
 export const RelatedWords = ({ label, words }: { label: string; words: string[] }) => {
@@ -15,13 +17,16 @@ export const RelatedWords = ({ label, words }: { label: string; words: string[] 
 
       <div className="flex flex-wrap gap-2">
         {uniqueWords.map((word) => (
-          <Link
-            key={word}
-            href={`/${encodeURIComponent(word)}`}
-            className="text-primary border-border border-e pe-2 text-[clamp(1rem,3vw,1.25rem)] leading-[1.2] font-bold underline-offset-2 last:border-none last:pe-0 hover:underline focus-visible:underline focus-visible:outline-none"
-          >
-            {word}
-          </Link>
+          <div key={word} className="flex items-center gap-2 last:*:data-[slot=separator]:hidden">
+            <Link
+              href={`/${encodeURIComponent(word)}`}
+              className="text-primary focus-styles rounded-xs text-[clamp(1rem,3vw,1.25rem)] leading-[1.2] font-bold underline-offset-2 hover:underline"
+            >
+              {word}
+            </Link>
+
+            <Separator orientation="vertical" />
+          </div>
         ))}
       </div>
     </div>

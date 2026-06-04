@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 
 import { cn } from '@/lib/utils';
 import { PlayIcon, NewWindowIcon } from '@/lib/icons';
@@ -19,37 +19,65 @@ export const WordDefinition = ({ word }: { word: string }) => {
   const [isAudioLoading, setIsAudioLoading] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
+  const firstEntry = data?.[0];
+  const audioSrc = firstEntry
+    ? firstEntry.phonetics.find((p) => p.audio?.endsWith('.mp3'))?.audio ||
+      firstEntry.phonetics.find((p) => !!p.audio)?.audio
+    : undefined;
+
+  useEffect(() => {
+    if (!audioSrc) {
+      audioRef.current = null;
+      return;
+    }
+
+    const audio = new Audio(audioSrc);
+
+    const handleLoadStart = () => setIsAudioLoading(true);
+    const handleWaiting = () => setIsAudioLoading(true);
+    const handleCanPlay = () => setIsAudioLoading(false);
+    const handlePlaying = () => setIsAudioLoading(false);
+    const handlePause = () => setIsAudioLoading(false);
+    const handleEnded = () => setIsAudioLoading(false);
+    const handleError = () => setIsAudioLoading(false);
+
+    audio.addEventListener('loadstart', handleLoadStart);
+    audio.addEventListener('waiting', handleWaiting);
+    audio.addEventListener('canplay', handleCanPlay);
+    audio.addEventListener('playing', handlePlaying);
+    audio.addEventListener('pause', handlePause);
+    audio.addEventListener('ended', handleEnded);
+    audio.addEventListener('error', handleError);
+
+    audioRef.current = audio;
+
+    return () => {
+      audio.pause();
+      audio.removeEventListener('loadstart', handleLoadStart);
+      audio.removeEventListener('waiting', handleWaiting);
+      audio.removeEventListener('canplay', handleCanPlay);
+      audio.removeEventListener('playing', handlePlaying);
+      audio.removeEventListener('pause', handlePause);
+      audio.removeEventListener('ended', handleEnded);
+      audio.removeEventListener('error', handleError);
+      audioRef.current = null;
+      setIsAudioLoading(false);
+    };
+  }, [audioSrc]);
+
   if (!word) return null;
   if (isLoading) return <LoadingSkeleton />;
   if (isError || !data || data.length === 0) return <NotFound />;
 
   const entry = data[0];
 
-  const audioSrc =
-    entry.phonetics.find((p) => p.audio?.endsWith('.mp3'))?.audio ||
-    entry.phonetics.find((p) => !!p.audio)?.audio;
-
   const phoneticText = entry.phonetic || entry.phonetics.find((p) => !!p.text)?.text;
 
   const handlePlay = () => {
-    if (!audioSrc) return;
+    if (!audioRef.current) return;
 
-    if (!audioRef.current) {
-      const audio = new Audio(audioSrc);
-
-      audio.addEventListener('loadstart', () => setIsAudioLoading(true));
-      audio.addEventListener('waiting', () => setIsAudioLoading(true));
-      audio.addEventListener('canplay', () => setIsAudioLoading(false));
-      audio.addEventListener('playing', () => setIsAudioLoading(false));
-      audio.addEventListener('pause', () => setIsAudioLoading(false));
-      audio.addEventListener('ended', () => setIsAudioLoading(false));
-      audio.addEventListener('error', () => setIsAudioLoading(false));
-
-      audioRef.current = audio;
-    } else {
-      if (audioRef.current.readyState < 3) {
-        setIsAudioLoading(true);
-      }
+    if (audioRef.current.readyState < 3) {
+      setIsAudioLoading(true);
     }
 
     audioRef.current.currentTime = 0;
